@@ -42,7 +42,7 @@ echo Entering ./suprtmp ...
 mkdir suprtmp && cd suprtmp
 echo Downloading $SLACKBUILD with curl ...
 f="${SLACKBUILD##*/}"
-curl -o "${f}" $SLACKBUILD
+wget -O "${f}" $SLACKBUILD
 echo Extracting $f
 tar xf "${f}"
 ftar="${f%.*}"
@@ -52,7 +52,7 @@ echo "We are installing $pkgname, if not... press CTRL+C now!"
 sleep 3
 echo Downloading $SOURCEURL
 srcf="${SOURCEURL##*/}"
-curl -o "${srcf}" $SOURCEURL
+wget -O "${srcf}" $SOURCEURL
 cat README
 echo "Great time to edit $(pwd)/$pkgname.SlackBuild !"
 echo "Enter build args ( ARG1=value ARG2=etc ARG3=yes )"
