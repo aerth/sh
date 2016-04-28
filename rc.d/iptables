@@ -10,3 +10,4 @@ iptables -P OUTPUT ACCEPT
 iptables -A OUTPUT -p icmp -m conntrack --ctstate INVALID -j DROP
 iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 
+iptables -A INPUT -s localhost -d localhost -j ACCEPT
