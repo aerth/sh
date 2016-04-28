@@ -1,2 +1,48 @@
 #!/bin/sh
-cd /usr/share/adminer/ && php -S localhost:8009 & echo "Adminer on http://localhost:8009"
+# Yea
+
+# Start sendmail:
+adminer_start() {
+  if [ ! -d "/usr/share/adminer/" ]; then
+  	echo Installing Adminer.
+  	mkdir -p /usr/share/adminer
+  	curl -o /usr/share/adminer/index.php https://www.adminer.org/latest-en.php
+  	echo Done installing Adminer.
+  fi
+  if [ -x $(which php) ]; then
+	php -S localhost:8009 -t /usr/share/adminer & echo "Adminer on http://localhost:8009"
+  fi
+}
+
+# Stop sendmail:
+adminer_stop() {
+PID=$(ps -ax | grep -v "ps" | grep -v "grep" | grep "php -S localhost:8009" | grep -v ps | awk '{print $1}')
+if [ ! -z $PID ]; then
+echo Killing $PID...
+kill $PID
+fi
+}
+
+adminer_update() {
+  	echo Updating Adminer.
+  	mkdir -p /usr/share/adminer
+  	curl -o /usr/share/adminer/index.php https://www.adminer.org/latest-en.php
+  	echo Done updating Adminer.
+}
+case "$1" in
+'stop')
+  adminer_stop
+  ;;
+'update')
+  adminer_update
+  ;;
+'install')
+  adminer_update
+  ;;
+'start')
+  adminer_start
+  ;;
+*)
+  echo "usage $0 start|stop"
+esac
+
