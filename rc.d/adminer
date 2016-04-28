@@ -6,7 +6,7 @@ adminer_start() {
   if [ ! -d "/usr/share/adminer/" ]; then
   	echo Installing Adminer.
   	mkdir -p /usr/share/adminer
-  	curl -o /usr/share/adminer/index.php https://www.adminer.org/latest-en.php
+  	wget -O /usr/share/adminer/index.php https://www.adminer.org/latest-en.php
   	echo Done installing Adminer.
   fi
   if [ -x $(which php) ]; then
@@ -26,7 +26,7 @@ fi
 adminer_update() {
   	echo Updating Adminer.
   	mkdir -p /usr/share/adminer
-  	curl -o /usr/share/adminer/index.php https://www.adminer.org/latest-en.php
+  	wget -O /usr/share/adminer/index.php https://www.adminer.org/latest-en.php
   	echo Done updating Adminer.
 }
 case "$1" in
