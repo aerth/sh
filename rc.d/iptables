@@ -1,5 +1,13 @@
 #!/bin/sh
 # Yea
+
+if [ "$SYSCTL" = "" ]
+then
+    echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+else
+    $SYSCTL net.ipv4.icmp_echo_ignore_broadcasts="1"
+fi
+
 iptables -F
 iptables --policy INPUT DROP
 iptables --policy OUTPUT DROP
