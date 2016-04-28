@@ -1,0 +1,12 @@
+#!/bin/sh
+# Yea
+iptables -F
+iptables --policy INPUT DROP
+iptables --policy OUTPUT DROP
+iptables --policy FORWARD DROP
+
+
+iptables -P OUTPUT ACCEPT
+iptables -A OUTPUT -p icmp -m conntrack --ctstate INVALID -j DROP
+iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+

@@ -1,5 +1,6 @@
 #!/bin/bash
 # aerth slackbuild script v99.99.9998
+set -e
 if [[ $1 == "clean" ]]; then
 rm -Rf ./suprtmp
 exit 0;
@@ -29,11 +30,11 @@ echo Downloading $SOURCEURL
 srcf="${SOURCEURL##*/}"
 curl -o "${srcf}" $SOURCEURL
 cat README
+echo "Great time to edit $(pwd)/$pkgname.SlackBuild !"
 echo "Enter build args ( ARG1=value ARG2=etc ARG3=yes )"
 read $ARGGGG
 export $ARGGGG
-echo "We are about to run this command using \`sudo su -l\`"
-echo sh $ARGGGG $pkgname.SlackBuild
+echo $ARGGGG $pkgname.SlackBuild
 #echo sh $ARGGGG ${f%.*}.SlackBuild"
 echo
 echo Building...
