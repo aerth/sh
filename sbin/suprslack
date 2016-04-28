@@ -1,6 +1,15 @@
 #!/bin/bash
 # aerth slackbuild script v99.99.9998
+
+# For "upgrade" check out the available packages at:
+# http://www.slackware.com/security/list.php?l=slackware-security&y=2016
+# or https://rss.packetstormsecurity.com/files/os/slackware/
+
 set -e
+if [[ $1 == "help" ]]; then
+echo "$0 update | install | upgrade | clean"
+exit 0;
+fi
 if [[ $1 == "clean" ]]; then
 rm -Rf ./suprtmp
 exit 0;
@@ -8,6 +17,21 @@ fi
 if [[ $1 == "update" ]]; then
 curl -o $(which suprslack) \
    https://raw.githubusercontent.com/aerth/sh/master/sbin/suprslack
+exit 0;
+fi
+if [[ $1 == "upgrade" ]]; then
+
+if [[ -z $2 ]]; then
+echo Example: $0 $1 n/php
+
+exit 1
+fi
+echo "Upgrading $2"
+mkdir /tmp/supr-upgrade || true
+cd /tmp/supr-upgrade
+wget ftp://ftp.slackware.com/pub/slackware/slackware64-current/slackware64/$2*
+f="${2##*/}"
+upgradepkg /tmp/supr-upgrade/$f*.txz
 exit 0;
 fi
 echo "Paste Source URL (http://example.com/source.tar.bz2)"
