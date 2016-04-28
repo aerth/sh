@@ -1,0 +1,6 @@
+#!/bin/sh
+set -e
+mysql_install_db --user=mysql
+sh /etc/rc.d/rc.mysqld start
+mysql_secure_installion
+echo "Now run '$HOME/rc.d/adminer start'"
