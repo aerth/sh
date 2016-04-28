@@ -4,6 +4,11 @@ if [[ $1 == "clean" ]]; then
 rm -Rf ./suprtmp
 exit 0;
 fi
+if [[ $1 == "update" ]]; then
+curl -o $(which suprslack) \
+   https://raw.githubusercontent.com/aerth/sh/master/sbin/suprslack
+exit 0;
+fi
 echo "Paste Source URL (http://example.com/source.tar.bz2)"
 read SOURCEURL
 echo "Paste SlackBuild URL (http://slackbuilds.org/etc/etc/pkg.tar.gz)"
