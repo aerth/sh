@@ -1,1 +1,17 @@
-# This is $HOME/rc.d and $HOME/bin stuff.
+#!/bin/sh
+exit 1
+
+tuned for slackware but can be used for any linux?
+
+```
+
+$ cd $HOME
+$ mkdir git && cd git
+$ git clone https://github.com/aerth/sh.git
+$ cd sh
+$ less install.sh
+$ ./install.sh
+$ cd $HOME # really just type cd
+$ ls bin sbin rc.d
+
+```
