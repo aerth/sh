@@ -1,2 +1,37 @@
 #!/bin/sh
-ssh -C -D 1080 $1 $2
+# Get BIND status:
+tun_start() {
+	ssh -C -D 1080 $1
+}
+tun_stop() {
+	pkill -f "ssh -C -D 1080"
+}
+tun_restart() {
+	tun_stop
+	tun_start $1
+}
+case "$1" in
+'start')
+	if [ -z $2 ]; then
+		echo "Need user@host"
+		exit 1
+	fi
+
+  tun_start $2
+  ;;
+'stop')
+  tun_stop
+  ;;
+'restart')
+	if [ -z $2 ]; then
+		echo "Need user@host"
+		exit 1
+	fi
+  tun_restart $2
+  ;;
+*)
+  echo "usage $0 start|stop|restart"
+esac
+
+
+
