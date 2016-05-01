@@ -1,0 +1,57 @@
+#!/bin/sh
+# Installs youtube-dl and grabs a list of youtube videos how you want it
+# youtube-list add -x https://yourvidlink
+# youtube-list add https://yourvidlink2
+# youtube-list add --audio-format mp3 -x https://yourvidlink3
+
+# Passes rest of arguments to the playlist
+# ytlist is a sort of playlist for youtube-dl
+# Line by line youtube-dl command line arguments
+
+set -e
+if [ -z $(which youtube-dl) ]; then
+echo youtube-list error: You need youtube-dl.
+echo Download from https://rg3.github.io/youtube-dl? type yes
+read CONTINUE
+
+if [ "$CONTINUE" == "yes" ]; then
+echo Installing youtube-dl...
+echo sudo curl https://yt-dl.org/downloads/2016.05.01/youtube-dl -o /usr/local/bin/youtube-dl
+echo sudo chmod a+rx /usr/local/bin/youtube-dl
+sudo curl https://yt-dl.org/downloads/2016.05.01/youtube-dl -o /usr/local/bin/youtube-dl
+sudo chmod a+rx /usr/local/bin/youtube-dl
+exit 0
+fi
+echo Not installing youtube-dl
+exit 1
+fi
+
+if [ "$1" == "demo" ]; then
+echo "https://www.youtube.com/watch?v=YaKNuELl1tM" >> ytlist
+echo "https://www.youtube.com/watch?v=tOx4Ru5o36U" >> ytlist
+echo "Now run $0"
+exit 0
+fi
+
+if [ "$1" == "add" ]; then
+shift
+echo "$@" >> ytlist
+echo "$@ added to ./ytlist"
+exit 0
+fi
+
+
+if [ ! -s ytlist ]
+then
+	echo "The file no existo"
+	echo youtube-list error: Create a playlist named ytlist
+	echo run \'$0 demo\' to create one.
+exit 1
+fi
+
+# The way this works allows lots of neat tricks in the ytlist.
+# For example:
+#
+# -x 
+#
+for i in $(cat ytlist); do youtube-dl $i; done
