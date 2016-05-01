@@ -8,14 +8,15 @@ else
     $SYSCTL net.ipv4.icmp_echo_ignore_broadcasts="1"
 fi
 
-iptables -F
-iptables --policy INPUT DROP
-iptables --policy OUTPUT DROP
-iptables --policy FORWARD DROP
+/usr/sbin/iptables -F
+/usr/sbin/iptables --policy INPUT DROP
+/usr/sbin/iptables --policy OUTPUT ACCEPT
+/usr/sbin/iptables --policy FORWARD DROP
 
 
-iptables -P OUTPUT ACCEPT
-iptables -A OUTPUT -p icmp -m conntrack --ctstate INVALID -j DROP
-iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+/usr/sbin/iptables -A OUTPUT --dport 22 ACCEPT
+/usr/sbin/iptables -A OUTPUT --dport 53 ACCEPT
+/usr/sbin/iptables -A OUTPUT -p icmp -m conntrack --ctstate INVALID -j DROP
+/usr/sbin/iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 
-iptables -A INPUT -s localhost -d localhost -j ACCEPT
+/usr/sbin/iptables -A INPUT -s localhost -d localhost -j ACCEPT
