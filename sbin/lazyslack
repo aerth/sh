@@ -12,6 +12,8 @@ mkdir $HOME/pkgs || true
 export OUTPUT=$HOME/pkgs
 set -e
 . ./*.info && $PROXYCOMMAND wget $DOWNLOAD
+if [ ! -z "$DOWNLOAD_x86_64" ]; then
 . ./*.info && $PROXYCOMMAND wget $DOWNLOAD_x86_64
+fi
 . ./*.info && sh *.SlackBuild
 
