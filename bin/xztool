@@ -1,0 +1,31 @@
+#!/bin/sh
+# xztool:
+compress() {
+	tar cf - $1 | xz -4e > $1.tar.xz
+}
+decompress() {
+	xz -dk $1
+}
+case "$1" in
+'c')
+	if [ -z $2 ]; then
+		echo "Need directory to compress."
+		exit 1
+	fi
+
+  compress $2
+  ;;
+'d')
+	if [ -z $2 ]; then
+		echo "Need user@host"
+		exit 1
+	fi
+  decompress $2
+  ;;
+*)
+  echo "usage $0 c directory"
+  echo "usage $0 d compressed-file"
+esac
+
+
+
