@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+#	lazyslack...
+#	Use with git clone https://slackbuilds.org/cgit/slackbuilds
+#
+#
+
+
+#PROXYCOMMAND=/usr/local/bin/proxychains4
+#PROXYCOMMAND=""
+mkdir $HOME/pkgs || true
+export OUTPUT=$HOME/pkgs
+set -e
+. ./*.info && $PROXYCOMMAND wget $DOWNLOAD
+. ./*.info && $PROXYCOMMAND wget $DOWNLOAD_x86_64
+. ./*.info && sh *.SlackBuild
+
