@@ -1,5 +1,15 @@
 #!/bin/sh
-# aerth was here
+# this is the script that powers the automatic cron builds
+# 	at ftp://ftp.isupon.us/bin/
+#
+# soon: cross compilation, makefile support, 
+# "./..." support, and some kind of web hook
+#
+#
+# Try: OUTPUT=$HOME/pkgs auto-go-build github.com/aerth/slow
+#
+# - aerth was here
+
 set -e
 # set OUTPUT variable to save packages elsewhere
 output=${OUTPUT:="/tmp"}
