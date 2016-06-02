@@ -36,6 +36,13 @@ echo you dont have go installed.
 exit 1
 fi
 
+# check for go
+if [ -z $(which go) ]; then
+echo you dont have godep installed.
+echo \'go get -v github.com/tools/godep\'
+exit 1
+fi
+
 ####
 # install a go program
 ####
