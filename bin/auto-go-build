@@ -48,7 +48,8 @@ fi
 ####
 base=$(basename $1)-$(uname -s)-$(uname -m).tar.gz
 go get -v -u "$1"
-cd $GOPATH/src/$1 && godep save ./... && godep go build && tar czf $output/$base .
+cd $GOPATH/src/$1 && godep go build && tar czf $output/$base .
+#cd $GOPATH/src/$1 && godep save ./... && godep go build && tar czf $output/$base .
 sha256sum $output/$base > $output/$base.sha256.txt
 echo "[ready] $output/$base"
 
