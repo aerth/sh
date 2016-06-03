@@ -1,15 +1,5 @@
 #!/bin/sh
-# this is the script that powers the automatic cron builds
-# 	at ftp://ftp.isupon.us/bin/
-#
-# soon: cross compilation, makefile support, 
-# "./..." support, and some kind of web hook
-#
-#
-# Try: OUTPUT=$HOME/pkgs auto-go-build github.com/aerth/slow
-#
-# - aerth was here
-
+# aerth was here
 set -e
 # set OUTPUT variable to save packages elsewhere
 output=${OUTPUT:="/tmp"}
@@ -21,6 +11,8 @@ echo Usage: $(basename "$0") github.com/aerth/slow
 exit 1
 fi
 
+
+buildone() {
 mkdir -p $output
 
 unset CDPATH
@@ -46,7 +38,7 @@ echo you dont have go installed.
 exit 1
 fi
 
-# check for go
+# check for godep
 if [ -z $(which go) ]; then
 echo you dont have godep installed.
 echo \'go get -v github.com/tools/godep\'
@@ -58,13 +50,27 @@ fi
 ####
 base=$(basename $1)-$(uname -s)-$(uname -m).tar.gz
 go get -v -u "$1"
-cd $GOPATH/src/$1 && godep go build && tar czf $output/$base .
-#cd $GOPATH/src/$1 && godep save ./... && godep go build && tar czf $output/$base .
-sha256sum $output/$base > $output/$base.sha256.txt
-echo "[ready] $output/$base"
+cd $GOPATH/src/$1 && godep save && godep go build && tar czf $output/$base . && sha256sum $output/$base > $output/$base.sha256.txt && echo "[ready] $output/$base" && cleanup
+}
 
+cleanup() {
+echo Deleting /tmp/go in 5 seconds.
+sleep 5
 unset GOPATH
 unset GOBIN
 unset GOTAR
 rm -Rf /tmp/go
+
+}
+
+
+case "$1" in
+'build')
+  buildone $2
+  ;;
+*)
+  echo "usage $0 build github.com/aerth/slow"
+esac
+
+
 
