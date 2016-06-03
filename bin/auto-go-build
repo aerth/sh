@@ -1,0 +1,77 @@
+#!/bin/sh
+# aerth was here
+set -e
+# set OUTPUT variable to save packages elsewhere
+output=${OUTPUT:="/tmp"}
+
+if [ -z "$1" ]; then
+echo [auto go build]
+echo Need target go package.
+echo Usage: $(basename "$0") package github.com/aerth/slow
+exit 1
+fi
+
+
+buildone() {
+mkdir -p $output
+
+unset CDPATH
+
+if [ ! -z "$GOPATH" ];then
+unset GOPATH
+fi
+
+export GOPATH=/tmp/go
+
+# as root!?
+if [ "`id -u`" = "0" ]; then
+echo Not as root!
+exit 1
+else
+export GOBIN=/tmp/bin
+mkdir -p /tmp/bin
+fi
+
+# check for go
+if [ -z $(which go) ]; then
+echo you dont have go installed.
+exit 1
+fi
+
+# check for godep
+if [ -z $(which go) ]; then
+echo you dont have godep installed.
+echo \'go get -v github.com/tools/godep\'
+exit 1
+fi
+
+####
+# install a go program
+####
+base=$(basename $1)-$(uname -s)-$(uname -m).tar.gz
+go get -v -u -d "$1"
+go get -v -u -d golang.org/x/sys/unix # workaround stupid bug
+cd $GOPATH/src/$1 && go get -d ./... && godep save && godep go build && tar czf $output/$base . && sha256sum $output/$base > $output/$base.sha256.txt && echo "[ready] $output/$base" && cleanup
+}
+
+cleanup() {
+echo Deleting /tmp/go in 5 seconds.
+sleep 5
+unset GOPATH
+unset GOBIN
+unset GOTAR
+rm -Rf /tmp/go
+
+}
+
+
+case "$1" in
+'package')
+  buildone $2
+  ;;
+*)
+  echo "usage $0 package github.com/aerth/slow"
+esac
+
+
+
