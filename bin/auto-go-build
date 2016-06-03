@@ -49,8 +49,9 @@ fi
 # install a go program
 ####
 base=$(basename $1)-$(uname -s)-$(uname -m).tar.gz
-go get -v -u "$1"
-cd $GOPATH/src/$1 && godep save && godep go build && tar czf $output/$base . && sha256sum $output/$base > $output/$base.sha256.txt && echo "[ready] $output/$base" && cleanup
+go get -v -u -d "$1"
+go get -v -u -d golang.org/x/sys/unix # workaround stupid bug
+cd $GOPATH/src/$1 && go get -d ./... && godep save && godep go build && tar czf $output/$base . && sha256sum $output/$base > $output/$base.sha256.txt && echo "[ready] $output/$base" && cleanup
 }
 
 cleanup() {
