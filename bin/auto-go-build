@@ -3,7 +3,8 @@
 set -e
 # set OUTPUT variable to save packages elsewhere
 output=${OUTPUT:="/tmp"}
-
+# set TMP variable if your /tmp is small.
+TMP=${TMP:=/tmp}
 if [ -z "$1" ]; then
 echo [auto go build]
 echo Need target go package.
@@ -11,6 +12,11 @@ echo Usage: $(basename "$0") package github.com/aerth/slow
 exit 1
 fi
 
+# as root!?
+if [ "`id -u`" = "0" ]; then
+echo Not as root!
+exit 1
+fi
 
 buildone() {
 mkdir -p $output
@@ -21,16 +27,13 @@ if [ ! -z "$GOPATH" ];then
 unset GOPATH
 fi
 
-export GOPATH=/tmp/go
+# make a new unique temporary go path
+GOTMP=$(mktemp -d "$TMP/go-XXXXXX") || exit 1
 
-# as root!?
-if [ "`id -u`" = "0" ]; then
-echo Not as root!
-exit 1
-else
+# need to be exported for go builds to respect the variable
+export GOPATH=$GOTMP
 export GOBIN=/tmp/bin
-mkdir -p /tmp/bin
-fi
+PATH=$PATH:$GOBIN
 
 # check for go
 if [ -z $(which go) ]; then
@@ -39,19 +42,19 @@ exit 1
 fi
 
 # check for godep
-if [ -z $(which go) ]; then
+if [ -z $(which godep) ]; then
 echo you dont have godep installed.
 echo \'go get -v github.com/tools/godep\'
 exit 1
 fi
 
 ####
-# install a go program
+# build a go program
 ####
 base=$(basename $1)-$(uname -s)-$(uname -m).tar.gz
 go get -v -u -d "$1"
 go get -v -u -d golang.org/x/sys/unix # workaround stupid bug
-cd $GOPATH/src/$1 && go get -d ./... && godep save && godep go build && tar czf $output/$base . && sha256sum $output/$base > $output/$base.sha256.txt && echo "[ready] $output/$base" && cleanup
+cd $GOPATH/src/$1 && godep get ./... && godep save ./... && godep go build && tar czf $output/$base . && sha256sum $output/$base > $output/$base.sha256.txt && echo "[ready] $output/$base" && cleanup
 }
 
 cleanup() {
@@ -60,7 +63,7 @@ sleep 5
 unset GOPATH
 unset GOBIN
 unset GOTAR
-rm -Rf /tmp/go
+rm -Rf $TMPGO
 
 }
 
