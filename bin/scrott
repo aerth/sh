@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+mkdir -p $HOME/screenshots
+DATE=$(date +%s)
+import -window root $HOME/screenshots/$DATE.png
+echo "this aint scrot but your screen shot is now available:
+$HOME/screenshots/$DATE.png"
+exit 0
