@@ -1,6 +1,11 @@
-#!/bin/sh
-# Yea
-
+#!/bin/bash
+# aerth waz here
+# iptables: block all, allow ssh, dns and local SOCKS 1080
+#############################
+if [ "$(whoami)" != "root" ]; then
+echo must be root to run iptables
+exit 1
+fi
 if [ "$SYSCTL" = "" ]
 then
     echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
@@ -8,15 +13,45 @@ else
     $SYSCTL net.ipv4.icmp_echo_ignore_broadcasts="1"
 fi
 
-/usr/sbin/iptables -F
-/usr/sbin/iptables --policy INPUT DROP
-/usr/sbin/iptables --policy OUTPUT ACCEPT
-/usr/sbin/iptables --policy FORWARD DROP
+# path to iptables (/sbin/iptables or /usr/sbin/iptables)
+IPTABLES+=iptables
 
+"$IPTABLES" -F
+"$IPTABLES" --policy INPUT DROP
+"$IPTABLES" --policy OUTPUT DROP
+"$IPTABLES" --policy FORWARD DROP
 
-#/usr/sbin/iptables -A OUTPUT --dport 22 ACCEPT
-#/usr/sbin/iptables -A OUTPUT --dport 53 ACCEPT
-/usr/sbin/iptables -A OUTPUT -p icmp -m conntrack --ctstate INVALID -j DROP
-/usr/sbin/iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+# allow outgoing ssh and dns
+#############################
+"$IPTABLES" -A OUTPUT -p tcp --dport 22 -j ACCEPT
+"$IPTABLES" -A OUTPUT -p udp --dport 53 -j ACCEPT
+"$IPTABLES" -A OUTPUT -p tcp --dport 53 -j ACCEPT
 
-/usr/sbin/iptables -A INPUT -s localhost -d localhost -j ACCEPT
+# and incoming ssh for servers
+#############################
+"$IPTABLES" -A INPUT -p tcp --dport 22 -j ACCEPT
+
+# and local proxy (ssh -D 1080 hostname)
+#############################
+"$IPTABLES" -A INPUT -s localhost -p tcp --dport 1080 -j ACCEPT
+
+# and http/https
+#############################
+##"$IPTABLES" -A OUTPUT -p tcp --dport 80 -j ACCEPT
+##"$IPTABLES" -A OUTPUT -p tcp --dport 443 -j ACCEPT
+
+# drop invalid
+#############################
+"$IPTABLES" -A OUTPUT -p icmp -m conntrack --ctstate INVALID -j DROP
+
+# allow responses
+#############################
+"$IPTABLES" -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+# allow local
+#############################
+"$IPTABLES" -A OUTPUT -s localhost -d localhost -j ACCEPT
+"$IPTABLES" -A INPUT -s localhost -d localhost -j ACCEPT
+"$IPTABLES" -A FORWARD -s localhost -d localhost -j ACCEPT
+
+exit 0
