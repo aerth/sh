@@ -1,0 +1,30 @@
+#!/bin/sh
+
+if [ -f main.go ]; then
+echo "main.go already exists."
+exit 1
+fi
+
+
+cat >> main.go <<'EOF'
+package main
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*    
+*   Copyright (C) 2017 aerth <aerth@riseup.net
+*
+*   This file is made available under the terms of the MIT license.
+*
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+/*
+ * Basic Go main package
+ */
+
+func main(){
+    
+}
+
+EOF
+echo main.go created successfully
+# aerth waz here
