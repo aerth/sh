@@ -1,0 +1,11 @@
+#!/bin/sh
+
+#########################
+# aerth@riseup.net 2017 #
+#########################
+
+test -x "$(which w3m)" && command w3m https://duckduckgo.com/lite/ && exit 0
+
+test -x "$(which lynx)" && command lynx https://duckduckgo.com/lite/ && exit 0
+
+echo "you need to install either w3m or lynx to browse the web from your console"
