@@ -1,7 +1,6 @@
-#!/bin/sh
-exit 1
+#!/bin/bash
 
-tuned for slackware but can be used for any linux?
+exit 1
 
 ```
 
